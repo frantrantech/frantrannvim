@@ -1,0 +1,10 @@
+{
+    "manipulators": [
+        {
+            "description": "toggleCtrlCommand",
+            "from": { "key_code": "right_alt" },
+            "to": [{ "shell_command": "/bin/zsh ~/.config/nvim/toggleCommandCtrl.zsh" }],
+            "type": "basic"
+        }
+    ]
+}

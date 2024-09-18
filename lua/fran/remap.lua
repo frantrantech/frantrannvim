@@ -17,6 +17,10 @@ vim.keymap.set("n", "<leader>Y", [["+Y]])
 
 vim.keymap.set({"n", "v"}, "<leader>d", [["_d]])
 
+vim.keymap.set("n", "<C-j>", "<cmd>cnext<CR>zz")
+vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
 
+-- close quick fix with leader qf
+vim.keymap.set('n', '<leader>qf', ':cclose<CR>')
 
 vim.keymap.set("n", "<C-ww>", "<leader>wo")

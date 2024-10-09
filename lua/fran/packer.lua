@@ -45,7 +45,7 @@ use {
     end
 }
 
+use 'rebelot/kanagawa.nvim'
 
-  
 
 end)

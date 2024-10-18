@@ -23,6 +23,5 @@ vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
 -- close quick fix with leader qf
 vim.keymap.set('n', '<leader>qf', ':cclose<CR>')
 
-vim.keymap.set("n", "<C-ww>", "<leader>wo")
-
+vim.keymap.set("n", "<D-n>", "<C-n>", { noremap = true, silent = true })
 

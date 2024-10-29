@@ -7,7 +7,6 @@ return require('packer').startup(function(use)
   -- Packer can manage itself
   use 'wbthomason/packer.nvim'
 
-
   use {
     'nvim-telescope/telescope.nvim', tag = '0.1.8',
     -- or                            , branch = '0.1.x',
@@ -36,6 +35,8 @@ return require('packer').startup(function(use)
     end
   }
 
+use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
+
   use {
     "windwp/nvim-autopairs",
     event = "InsertEnter",
@@ -63,11 +64,16 @@ return require('packer').startup(function(use)
     opts = {},
   }
   use "rebelot/kanagawa.nvim"
+use { "ellisonleao/gruvbox.nvim" }
+use "EdenEast/nightfox.nvim"
+use {'nyoom-engineering/oxocarbon.nvim'}
 
 
   use {
     'nvim-lualine/lualine.nvim',
     requires = { 'nvim-tree/nvim-web-devicons', opt = true }
   }
+
+
 
 end)

@@ -86,20 +86,31 @@ return {
   },
 
   color_scheme = "carbonfox",
-    -- window_background_image = "/Users/francis.tran/Desktop/online_psykos-review.jpg",
-    -- window_background_opacity = 0.5,
+  font_size = 20.0,
+  
+  -- Set the font and disable ligatures
+  font = wezterm.font_with_fallback({
+    {
+      family = "JetBrains Mono",  -- Replace with your preferred font
+      harfbuzz_features = {"calt=0", "liga=0"},
+    },
+  }),
 
+  -- Background image (uncomment if needed)
+  -- window_background_image = "/Users/francis.tran/Desktop/online_psykos-review.jpg",
+  -- window_background_opacity = 0.5,
 
   keys = {
     { key = "n", mods = "SUPER", action = wezterm.action { SendKey = { key = "n", mods = "CTRL" } } },
     { key = "u", mods = "SUPER", action = wezterm.action { SendKey = { key = "u", mods = "CTRL" } } },
     { key = "d", mods = "SUPER", action = wezterm.action { SendKey = { key = "d", mods = "CTRL" } } },
     { key = "j", mods = "SUPER", action = wezterm.action { SendKey = { key = "j", mods = "CTRL" } } },
-    -- { key = "k", mods = "SUPER", action = wezterm.action { SendKey = { key = "k", mods = "CTRL" } } },
+    { key = "k", mods = "SUPER", action = wezterm.action { SendKey = { key = "k", mods = "CTRL" } } },
     { key = "o", mods = "SUPER", action = wezterm.action { SendKey = { key = "o", mods = "CTRL" } } },
     { key = "r", mods = "SUPER", action = wezterm.action { SendKey = { key = "r", mods = "CTRL" } } },
     { key = "p", mods = "SUPER", action = wezterm.action { SendKey = { key = "p", mods = "CTRL" } } },
     { key = 'k', mods = 'SUPER', action = wezterm.action.ClearScrollback("ScrollbackOnly")},
   }  
 }
+
 

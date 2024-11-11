@@ -23,5 +23,10 @@ vim.keymap.set("n", "<C-k>", "<cmd>cprev<CR>zz")
 -- close quick fix with leader qf
 vim.keymap.set('n', '<leader>qf', ':cclose<CR>')
 
-vim.keymap.set("n", "<D-n>", "<C-n>", { noremap = true, silent = true })
+-- copy buffer contents to clipboard
+vim.keymap.set('n', '<leader>9', 'ggVG"+y')
 
+vim.keymap.set('n', '<leader>8', 'i//<Esc>i**<Esc>i')
+
+vim.keymap.set('n', '<leader>m', "%")
+vim.keymap.set('n', '<leader>;', "*")

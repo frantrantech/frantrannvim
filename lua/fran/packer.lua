@@ -13,7 +13,6 @@ return require('packer').startup(function(use)
     requires = { { 'nvim-lua/plenary.nvim' } }
   }
   use('nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' })
-  use('nvim-treesitter/nvim-treesitter')
   use('nvim-treesitter/playground')
   use('ThePrimeagen/harpoon')
   use('mbbill/undotree')
@@ -67,6 +66,7 @@ use { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' }
 use { "ellisonleao/gruvbox.nvim" }
 use "EdenEast/nightfox.nvim"
 use {'nyoom-engineering/oxocarbon.nvim'}
+use "maxmx03/fluoromachine.nvim"
 
 
   use {

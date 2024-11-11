@@ -1,4 +1,9 @@
+vim.api.nvim_create_user_command("Color", function(args)
+    local colorscheme = args.args
+    vim.cmd("colorscheme " .. colorscheme)
+end, { nargs = 1 })
 -- vim.cmd("colorscheme cyberdream")
+--
 
 -- Lua:
 -- For dark theme (neovim's default)

@@ -85,6 +85,7 @@ require('nightfox').setup({
 -- vim.cmd([[colorscheme gruvbox]])
 
 -- vim.cmd[[colorscheme tokyonight]]
+-- vim.cmd("colorscheme cyberdream")
 vim.cmd("colorscheme carbonfox")
 
 -- vim.cmd("colorscheme kanagawa")

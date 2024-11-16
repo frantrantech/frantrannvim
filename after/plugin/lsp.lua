@@ -22,7 +22,7 @@ local capabilities = vim.tbl_deep_extend(
 
 require('mason').setup({})
 require('mason-lspconfig').setup({
-  ensure_installed = { 'ts_ls', 'rust_analyzer', 'tailwindcss', 'cssls', 'lua_ls', 'gopls' },
+  ensure_installed = { 'ts_ls', 'denols', 'rust_analyzer', 'tailwindcss', 'cssls', 'lua_ls', 'gopls' },
   handlers = {
     function(server_name)
       require('lspconfig')[server_name].setup({

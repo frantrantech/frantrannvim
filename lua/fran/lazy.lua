@@ -1,3 +1,4 @@
+---@diagnostic disable: undefined-global
 -- Bootstrap lazy.nvim
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not (vim.uv or vim.loop).fs_stat(lazypath) then
@@ -51,15 +52,54 @@ require("lazy").setup({
             "williamboman/mason-lspconfig.nvim",
         },
 
+        -- {
+        --     'saghen/blink.cmp',
+        --     -- optional: provides snippets for the snippet source
+        --     dependencies = 'rafamadriz/friendly-snippets',
+        --
+        --     -- use a release tag to download pre-built binaries
+        --     version = '*',
+        --     -- AND/OR build from source, requires nightly: https://rust-lang.github.io/rustup/concepts/channels.html#working-with-nightly-rust
+        --     -- build = 'cargo build --release',
+        --     -- If you use nix, you can build from source using latest nightly rust with:
+        --     -- build = 'nix run .#build-plugin',
+        --
+        --     ---@module 'blink.cmp'
+        --     ---@type blink.cmp.Config
+        --     opts = {
+        --         -- 'default' for mappings similar to built-in completion
+        --         -- 'super-tab' for mappings similar to vscode (tab to accept, arrow keys to navigate)
+        --         -- 'enter' for mappings similar to 'super-tab' but with 'enter' to accept
+        --         -- See the full "keymap" documentation for information on defining your own keymap.
+        --         keymap = { preset = 'default' },
+        --
+        --         appearance = {
+        --             -- Sets the fallback highlight groups to nvim-cmp's highlight groups
+        --             -- Useful for when your theme doesn't support blink.cmp
+        --             -- Will be removed in a future release
+        --             use_nvim_cmp_as_default = true,
+        --             -- Set to 'mono' for 'Nerd Font Mono' or 'normal' for 'Nerd Font'
+        --             -- Adjusts spacing to ensure icons are aligned
+        --             nerd_font_variant = 'mono'
+        --         },
+        --
+        --         -- Default list of enabled providers defined so that you can extend it
+        --         -- elsewhere in your config, without redefining it, due to `opts_extend`
+        --         sources = {
+        --             default = { 'lsp', 'path', 'snippets', 'buffer' },
+        --         },
+        --     },
+        --     opts_extend = { "sources.default" }
+        -- },
+
         -- Autopairs
         {
             "windwp/nvim-autopairs",
-            eventversion = "InsertEnter",
+            event = "InsertEnter", -- Corrected key
             config = function()
                 require("nvim-autopairs").setup {}
             end
         },
-
         -- TypeScript tools
         {
             "pmizio/typescript-tools.nvim",
@@ -100,6 +140,100 @@ require("lazy").setup({
                 require('Comment').setup()
             end
         },
+
+        {
+            "folke/snacks.nvim",
+            priority = 1000,
+            lazy = false,
+            ---@type snacks.Config
+            opts = {
+                -- your configuration comes here
+                -- or leave it empty to use the default settings
+                -- refer to the configuration section below
+                -- bigfile = { enabled = true },
+                dashboard =
+
+                ---@class snacks.dashboard.Config
+                ---@field enabled? boolean
+                ---@field sections snacks.dashboard.Section
+                ---@field formats table<string, snacks.dashboard.Text|fun(item:snacks.dashboard.Item, ctx:snacks.dashboard.Format.ctx):snacks.dashboard.Text>
+                {
+                    width = 60,
+                    row = nil,                                                                   -- dashboard position. nil for center
+                    col = nil,                                                                   -- dashboard position. nil for center
+                    pane_gap = 4,                                                                -- empty columns between vertical panes
+                    autokeys = "1234567890abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ", -- autokey sequence
+                    -- These settings are used by some built-in sections
+                    preset = {
+                        -- Defaults to a picker that supports `fzf-lua`, `telescope.nvim` and `mini.pick`
+                        ---@type fun(cmd:string, opts:table)|nil
+                        pick = nil,
+                        -- Used by the `keys` section to show keymaps.
+                        -- Set your custom keymaps here.
+                        -- When using a function, the `items` argument are the default keymaps.
+                        ---@type snacks.dashboard.Item[]
+                        keys = {
+                            { icon = " ",  key = "f", desc = "Find File",       action = ":lua Snacks.dashboard.pick('files')" },
+                            { icon = " ",  key = "n", desc = "New File",        action = ":ene | startinsert" },
+                            { icon = " ",  key = "g", desc = "Find Text",       action = ":lua Snacks.dashboard.pick('live_grep')" },
+                            { icon = " ",  key = "r", desc = "Recent Files",    action = ":lua Snacks.dashboard.pick('oldfiles')" },
+                            { icon = " ",  key = "c", desc = "Config",          action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
+                            { icon = " ",  key = "s", desc = "Restore Session", section = "session" },
+                            { icon = "󰒲 ", key = "L", desc = "Lazy",            action = ":Lazy",                                                                enabled = package.loaded.lazy ~= nil },
+                            { icon = " ",  key = "q", desc = "Quit",            action = ":qa" },
+                        },
+                        -- Used by the `header` section
+                        header = [[
+███╗   ██╗███████╗ ██████╗ ██╗   ██╗██╗███╗   ███╗
+████╗  ██║██╔════╝██╔═══██╗██║   ██║�
+�█║████╗ ████║
+██╔██╗ ██║█████╗  ██║   ██║██║   ██║██║██╔████╔██║
+██║╚██╗██║██╔══╝  ██║   ██║╚██╗ ██╔╝██║██║╚██╔╝██║
+██║ ╚████║███████╗╚██████╔╝ ╚████╔╝ ██║██║ ╚═╝ ██║
+╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝]],
+                    },
+                    -- item field formatters
+                    formats = {
+                        icon = function(item)
+                            if item.file and item.icon == "file" or item.icon == "directory" then
+                                return M.icon(item.file, item.icon)
+                            end
+                            return { item.icon, width = 2, hl = "icon" }
+                        end,
+                        footer = { "%s", align = "center" },
+                        header = { "%s", align = "center" },
+                        file = function(item, ctx)
+                            local fname = vim.fn.fnamemodify(item.file, ":~")
+                            fname = ctx.width and #fname > ctx.width and vim.fn.pathshorten(fname) or fname
+                            if #fname > ctx.width then
+                                local dir = vim.fn.fnamemodify(fname, ":h")
+                                local file = vim.fn.fnamemodify(fname, ":t")
+                                if dir and file then
+                                    file = file:sub(-(ctx.width - #dir - 2))
+                                    fname = dir .. "/…" .. file
+                                end
+                            end
+                            local dir, file = fname:match("^(.*)/(.+)$")
+                            return dir and { { dir .. "/", hl = "dir" }, { file, hl = "file" } } or
+                                { { fname, hl = "file" } }
+                        end,
+                    },
+                    sections = {
+                        { section = "header" },
+                        { section = "keys",   gap = 1, padding = 1 },
+                        { section = "startup" },
+                    },
+                },
+                -- indent = { enabled = true },
+                -- input = { enabled = true },
+                -- notifier = { enabled = true },
+                -- quickfile = { enabled = true },
+                -- scroll = { enabled = true },
+                -- statuscolumn = { enabled = true },
+                -- words = { enabled = true },
+            },
+        },
+
         {
             "kawre/leetcode.nvim",
             build = ":TSUpdate html",
@@ -202,7 +336,36 @@ require("lazy").setup({
                 ---@type boolean
                 image_support = false,
             },
-        }
+        },
+
+        --- Add Plugins here---
+        {
+            "sphamba/smear-cursor.nvim",
+            opts = {
+                -- Smear cursor when switching buffers or windows.
+                
+                smear_between_buffers = false,
+
+                -- Smear cursor when moving within line or to neighbor lines.
+                -- Use `min_horizontal_distance_smear` and `min_vertical_distance_smear` for finer control
+                smear_between_neighbor_lines = true,
+
+                -- Draw the smear in buffer space instead of screen space when scrolling
+                scroll_buffer_space = false,
+
+                -- Set to `true` if your font supports legacy computing symbols (block unicode symbols).
+                -- Smears will blend better on all backgrounds.
+                legacy_computing_symbols_support = false,
+
+                -- Smear cursor in insert mode.
+                -- See also `vertical_bar_cursor_insert_mode` and `distance_stop_animating_vertical_bar`.
+                smear_insert_mode = false,
+            },
+        },
+
+
+
+
 
 
 

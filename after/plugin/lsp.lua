@@ -10,7 +10,6 @@ local lsp_attach = function(client, bufnr)
   vim.keymap.set('n', 'gl', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
   vim.keymap.set({ 'n', 'x' }, '<leader>0', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
   vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
-
 end
 
 local cmp_lsp = require("cmp_nvim_lsp")
@@ -22,7 +21,7 @@ local capabilities = vim.tbl_deep_extend(
 
 require('mason').setup({})
 require('mason-lspconfig').setup({
-  ensure_installed = { 'ts_ls', 'denols', 'rust_analyzer', 'tailwindcss', 'cssls', 'lua_ls', 'gopls' },
+  ensure_installed = { 'ts_ls', 'rust_analyzer', 'tailwindcss', 'cssls', 'lua_ls', 'gopls' },
   handlers = {
     function(server_name)
       require('lspconfig')[server_name].setup({

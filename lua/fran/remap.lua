@@ -48,6 +48,10 @@
 ------------- Map Keys Here --------------
 
 vim.g.mapleader = " "
+-- Move to virtual lines instead of real lines -- 
+vim.keymap.set('n', 'j', 'gj', { noremap = true })
+vim.keymap.set('n', 'k', 'gk', { noremap = true })
+
 vim.keymap.set("n", "<leader>lv", vim.cmd.Ex)
 
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
@@ -105,3 +109,11 @@ end, { noremap = true, silent = true })
 -- remaps to find matches revisit later if layer keys are bad xd
 -- vim.keymap.set('n', '<leader>m', "%")
 -- vim.keymap.set('n', '<leader>;', "*")
+--
+
+-- Disable arrow keys
+local opts = { noremap = true, silent = true }
+vim.keymap.set({'n', 'i', 'v'}, '<Up>', '<Nop>', opts)
+vim.keymap.set({'n', 'i', 'v'}, '<Down>', '<Nop>', opts)
+vim.keymap.set({'n', 'i', 'v'}, '<Left>', '<Nop>', opts)
+vim.keymap.set({'n', 'i', 'v'}, '<Right>', '<Nop>', opts)

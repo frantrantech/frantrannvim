@@ -56,10 +56,14 @@ vim.keymap.set('n', 'k', 'gk', { noremap = true })
 -- Go to netrw --
 vim.keymap.set("n", "<leader>lv", vim.cmd.Ex)
 
+-- Move selected lines up and down and sets tab spacing
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
+-- Don't lose cursor position when joining lines
 vim.keymap.set("n", "J", "mzJ`z")
+
+-- Moving vertically centers screen
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
 

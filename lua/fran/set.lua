@@ -5,11 +5,13 @@ vim.opt.tabstop = 2
 vim.opt.softtabstop = 2
 vim.opt.shiftwidth = 2
 vim.opt.expandtab = true
--- vim.opt.textwidth = 80
 
 vim.opt.smartindent = true
 
-vim.opt.wrap = false
+vim.opt.wrap = true            -- Enable soft wrap
+vim.opt.linebreak = true       -- Don't break mid-word
+vim.opt.breakindent = true     -- Keep indent on wrapped lines
+-- vim.opt.showbreak = "↪ "       
 
 vim.opt.swapfile = false
 vim.opt.backup = false

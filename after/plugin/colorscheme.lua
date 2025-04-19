@@ -82,10 +82,17 @@ require('nightfox').setup({
 
 -- vim.cmd[[colorscheme tokyonight]]
 -- vim.cmd("colorscheme cyberdream")
-vim.cmd("colorscheme carbonfox")
+-- -- Transparent main buffer
+-- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
+-- vim.api.nvim_set_hl(0, "SignColumn", { bg = "none" })
 
--- vim.cmd("colorscheme kanagawa")
+-- Floating windows = solid background
+-- vim.api.nvim_set_hl(0, "NormalFloat", { bg = "#1a1b26" })       -- same as tokyonight float bg
+-- vim.api.nvim_set_hl(0, "FloatBorder", { bg = "#1a1b26" })
+-- vim.api.nvim_set_hl(0, "Pmenu", { bg = "#1a1b26" })             -- popup menus (like completion)
+-- vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "#1a1b26" })   -- Telescope popups
+-- vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "#1a1b26" })vim.cmd("colorscheme kanagawa")
 
-
--- vim.cmd("colorscheme oxocarbon")
 -- vim.opt.background = "dark" -- set this to dark or light
+vim.cmd("colorscheme carbonfox")

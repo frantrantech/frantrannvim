@@ -99,8 +99,8 @@ return {
       },
     },
   },
-
-  color_scheme = "cyberdream",
+    
+  color_scheme = "carbonfox",
   font_size = 20.0,
   
   -- Set the font and disable ligatures
@@ -112,8 +112,9 @@ return {
   }),
 
   -- Background image (uncomment if needed)
-  -- window_background_image = "/Users/francis.tran/Desktop/online_psykos-review.jpg",
-  -- window_background_opacity = 0.5,
+--   window_background_image = "/Users/francistran/Desktop/psykos.png",
+--   window_background_opacity = 0.5,
+-- macos_window_background_blur = 20,
 
   keys = {
     { key = "n", mods = "SUPER", action = wezterm.action { SendKey = { key = "n", mods = "CTRL" } } },
@@ -124,8 +125,10 @@ return {
     { key = "o", mods = "SUPER", action = wezterm.action { SendKey = { key = "o", mods = "CTRL" } } },
     { key = "r", mods = "SUPER", action = wezterm.action { SendKey = { key = "r", mods = "CTRL" } } },
     { key = "p", mods = "SUPER", action = wezterm.action { SendKey = { key = "p", mods = "CTRL" } } },
-    { key = 'k', mods = 'SUPER', action = wezterm.action.ClearScrollback("ScrollbackOnly")},
+    { key = 'K', mods = 'SUPER', action = act.ClearScrollback 'ScrollbackAndViewport',
+  },
   }  
 }
+
 
 

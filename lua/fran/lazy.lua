@@ -100,14 +100,6 @@ require("lazy").setup({
         require("nvim-autopairs").setup {}
       end
     },
-    -- TypeScript tools
-    {
-      "pmizio/typescript-tools.nvim",
-      dependencies = { "nvim-lua/plenary.nvim", "neovim/nvim-lspconfig" },
-      config = function()
-        require("typescript-tools").setup {}
-      end,
-    },
 
     -- Null-ls and formatting
     'jose-elias-alvarez/null-ls.nvim',
@@ -174,7 +166,7 @@ require("lazy").setup({
             ---@type snacks.dashboard.Item[]
             keys = {
               { icon = " ", key = "f", desc = "Find File", action = ":lua Snacks.dashboard.pick('files')" },
-              { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
+              -- { icon = " ", key = "n", desc = "New File", action = ":ene | startinsert" },
               { icon = " ", key = "g", desc = "Find Text", action = ":lua Snacks.dashboard.pick('live_grep')" },
               { icon = " ", key = "r", desc = "Recent Files", action = ":lua Snacks.dashboard.pick('oldfiles')" },
               { icon = " ", key = "c", desc = "Config", action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
@@ -347,6 +339,14 @@ require("lazy").setup({
             switch_mode = 'm', 
           }
         })
+      end
+    },
+
+    {
+      dir = "~/Desktop/dig.nvim",
+      config = function ()
+        require "dig"
+        require "picker"
       end
     }
 

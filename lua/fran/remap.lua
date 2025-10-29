@@ -49,7 +49,7 @@
 
 vim.g.mapleader = " "
 
--- Move to virtual lines instead of real lines -- 
+-- Move to virtual lines instead of real lines --
 vim.keymap.set('n', 'j', 'gj', { noremap = true })
 vim.keymap.set('n', 'k', 'gk', { noremap = true })
 
@@ -60,8 +60,7 @@ vim.keymap.set("n", "<leader>lv", vim.cmd.Ex)
 vim.keymap.set("v", "J", ":m '>+1<CR>gv=gv")
 vim.keymap.set("v", "K", ":m '<-2<CR>gv=gv")
 
--- Don't lose cursor position when joining lines
-vim.keymap.set("n", "J", "mzJ`z")
+-- Don't lose cursor position when joining lines vim.keymap.set("n", "J", "mzJ`z")
 
 -- Moving vertically centers screen
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
@@ -93,6 +92,9 @@ vim.keymap.set('n', '<leader>ff', ':cclose<CR>')
 -- Remap to use "gcc" from comment remap/package
 vim.keymap.set('n', '<leader>[', 'yygccp', { remap = true })
 
+-- Highlight from this character to the end of the line
+vim.keymap.set('n','<leader>vv', 'v$', {remap = false})
+
 -- copy buffer contents to clipboard
 vim.keymap.set('n', '<leader>9', 'ggVG"+y')
 
@@ -109,6 +111,12 @@ vim.keymap.set('n', '<leader>i', ':vsplit<cr><C-w>w<leader>1', { remap = true })
 
 -- Save File
 vim.keymap.set('n', '<leader>;', ':w<cr>')
+-- vim.keymap.set('n', '<leader>;', function()
+--   vim.cmd("w")
+--   if vim.bo.filetype == "lua" then
+--     vim.cmd("so")
+--   end
+-- end)
 
 -- Save and quit buffer. If in netrw, just quit
 vim.keymap.set("n", "<leader>n", function()
@@ -127,7 +135,7 @@ end, { noremap = true, silent = true })
 
 -- Disable arrow keys
 local opts = { noremap = true, silent = true }
-vim.keymap.set({'n', 'i', 'v'}, '<Up>', '<Nop>', opts)
-vim.keymap.set({'n', 'i', 'v'}, '<Down>', '<Nop>', opts)
-vim.keymap.set({'n', 'i', 'v'}, '<Left>', '<Nop>', opts)
-vim.keymap.set({'n', 'i', 'v'}, '<Right>', '<Nop>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Up>', '<Nop>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Down>', '<Nop>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Left>', '<Nop>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Right>', '<Nop>', opts)

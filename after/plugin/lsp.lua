@@ -1,6 +1,3 @@
-
-
-
 local lsp_attach = function(client, bufnr)
   local opts = { buffer = bufnr }
   vim.keymap.set('n', 'K', '<cmd>lua vim.lsp.buf.hover()<cr>', opts)
@@ -13,6 +10,8 @@ local lsp_attach = function(client, bufnr)
   vim.keymap.set('n', 'gl', '<cmd>lua vim.lsp.buf.rename()<cr>', opts)
   vim.keymap.set({ 'n', 'x' }, '<leader>0', '<cmd>lua vim.lsp.buf.format({async = true})<cr>', opts)
   vim.keymap.set('n', 'ga', '<cmd>lua vim.lsp.buf.code_action()<cr>', opts)
+
+  -- print("LSP attached to", vim.api.nvim_buf_get_name(bufnr))
 end
 
 local cmp_lsp = require("cmp_nvim_lsp")
@@ -71,30 +70,31 @@ cmp.setup({
 -- Allows us to move around in LSP hover.
 -- Thus j and k do not exit the LSP hover. 
 -- Must press q to quit.
-vim.lsp.handlers["textDocument/hover"] = function(_, result, ctx, config)
-  if not (result and result.contents) then
-    return
-  end
 
-  local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
-  markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
-  if vim.tbl_isempty(markdown_lines) then
-    return
-  end
-
-  config = vim.tbl_deep_extend("force", {
-    border = "single",
-    focusable = true,
-  }, config or {})
-
-  local bufnr, winid = vim.lsp.util.open_floating_preview(markdown_lines, "markdown", config)
-
-  if bufnr and winid then
-    -- Add keymap to allow 'q' to close the floating window
-    vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<cmd>close<CR>", { silent = true, noremap = true })
-    -- Ensure the buffer isn't hanging around after the window is closed
-    vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
-    -- Set cursor to floating window
-    vim.api.nvim_set_current_win(winid)
-  end
-end
+-- vim.lsp.handlers["textDocument/hover"] = function(_, result, ctx, config)
+--   if not (result and result.contents) then
+--     return
+--   end
+--
+--   local markdown_lines = vim.lsp.util.convert_input_to_markdown_lines(result.contents)
+--   markdown_lines = vim.lsp.util.trim_empty_lines(markdown_lines)
+--   if vim.tbl_isempty(markdown_lines) then
+--     return
+--   end
+--
+--   config = vim.tbl_deep_extend("force", {
+--     border = "single",
+--     focusable = true,
+--   }, config or {})
+--
+--   local bufnr, winid = vim.lsp.util.open_floating_preview(markdown_lines, "markdown", config)
+--
+--   if bufnr and winid then
+--     -- Add keymap to allow 'q' to close the floating window
+--     vim.api.nvim_buf_set_keymap(bufnr, "n", "q", "<cmd>close<CR>", { silent = true, noremap = true })
+--     -- Ensure the buffer isn't hanging around after the window is closed
+--     vim.api.nvim_buf_set_option(bufnr, "bufhidden", "wipe")
+--     -- Set cursor to floating window
+--     vim.api.nvim_set_current_win(winid)
+--   end
+-- end

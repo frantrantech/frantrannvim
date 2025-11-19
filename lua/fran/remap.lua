@@ -96,7 +96,7 @@ vim.keymap.set('n', '<leader>[', 'yygccp', { remap = true })
 vim.keymap.set('n','<leader>vv', 'v$', {remap = false})
 
 -- copy buffer contents to clipboard
-vim.keymap.set('n', '<leader>9', 'ggVG"+y')
+vim.keymap.set('n', '<leader>9', 'ggVG"+y<C-o>')
 
 -- Multiline comment
 vim.keymap.set('n', '<leader>8', 'o//<Esc>i**<Esc>i')

@@ -70,7 +70,8 @@ vim.keymap.set("n", "<C-u>", "<C-u>zz")
 vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
--- Paste and send pasted over to black hole register --
+--; Paste and send pasted over to black hole register --
+--
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- Yank to clipboard register --
@@ -111,12 +112,6 @@ vim.keymap.set('n', '<leader>i', ':vsplit<cr><C-w>w<leader>1', { remap = true })
 
 -- Save File
 vim.keymap.set('n', '<leader>;', ':w<cr>')
--- vim.keymap.set('n', '<leader>;', function()
---   vim.cmd("w")
---   if vim.bo.filetype == "lua" then
---     vim.cmd("so")
---   end
--- end)
 
 -- Save and quit buffer. If in netrw, just quit
 vim.keymap.set("n", "<leader>n", function()
@@ -128,6 +123,11 @@ vim.keymap.set("n", "<leader>n", function()
     vim.cmd("q!") -- Quit without saving if no changes
   end
 end, { noremap = true, silent = true })
+
+-- Swap 0 (start of line) to _ (first char in line)
+vim.keymap.set('n', '0', '_', {remap = false})
+vim.keymap.set('n', '_', '0', {remap = false})
+
 -- remaps to find matches revisit later if layer keys are bad xd
 -- vim.keymap.set('n', '<leader>m', "%")
 -- vim.keymap.set('n', '<leader>;', "*")

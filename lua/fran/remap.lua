@@ -71,7 +71,6 @@ vim.keymap.set("n", "n", "nzzzv")
 vim.keymap.set("n", "N", "Nzzzv")
 
 --; Paste and send pasted over to black hole register --
---
 vim.keymap.set("x", "<leader>p", [["_dP]])
 
 -- Yank to clipboard register --

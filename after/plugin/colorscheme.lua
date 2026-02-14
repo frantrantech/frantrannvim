@@ -15,7 +15,7 @@ local builtin = require "telescope.builtin"
 --    On Colorscheme Select: Save the colorscheme to a file in the format of:
 --        NEOVIM_COLORSCHEME_NAME
 --        SHELL_SCRIPT_COLORSCHEME_NAME
---    
+--
 --    On Neovim Load: Read the file that stores the colorscheme names
 --
 --        If the shell script exists for the colorscheme:
@@ -33,9 +33,12 @@ local builtin = require "telescope.builtin"
 
 local defaultColorScheme = "carbonfox"
 local configPath = vim.fn.stdpath("config")
+local colorscriptPath = configPath .. "/colorscripts/"
+local lastUsedColorschemeFileName = "lastColorScheme.txt"
+local lastCurrentColorschemeFilePath
+
 function SetColorschemeFromFile()
-  local lastUsedColorschemeFileName = "lastColorScheme.txt"
-  local lastCurrentColorschemeFilePath = configPath .. "/" .. lastUsedColorschemeFileName
+  lastCurrentColorschemeFilePath = configPath .. "/" .. lastUsedColorschemeFileName
   local lastCurrentColorSchemeFileExists = vim.uv.fs_stat(lastCurrentColorschemeFilePath) ~= nil
 
   if lastCurrentColorSchemeFileExists then
@@ -44,22 +47,21 @@ function SetColorschemeFromFile()
     local lastColorschemeNvimName = lastColorchemesArray[1]
     local lastColorschemeScriptName = lastColorchemesArray[2]
 
-    local defaultColorSchemePath = configPath .. "/" .. "carbonfox" .. ".sh"
-    local lastColorschemeShellScriptPath = configPath ..
-        "/colorscripts/" .. "" .. lastColorschemeScriptName .. ".sh"
+    local defaultColorSchemePath = configPath .. "/" .. defaultColorScheme.. ".sh"
+    local lastColorschemeShellScriptPath = colorscriptPath.. "" .. lastColorschemeScriptName .. ".sh"
     local lastColorschemeShellScriptExists = vim.uv.fs_stat(lastColorschemeShellScriptPath) ~= nil
 
-    -- If the shell script exists, then use set nvim colorscheme AND execute colorscheme script
     if lastColorschemeShellScriptExists then
+      -- If the shell script exists, then use set nvim colorscheme AND execute colorscheme script
       vim.cmd.colorscheme(lastColorschemeNvimName)
       os.execute('sh ' .. lastColorschemeShellScriptPath)
-      -- If the shell script doesn't exist, then default to carbonfox
     else
+      -- If the shell script doesn't exist, then default to carbonfox
       vim.cmd.colorscheme(defaultColorScheme)
       os.execute('sh ' .. defaultColorSchemePath)
     end
-    -- If we don't have the colorscheme file, use default
   else
+    -- If we don't have the colorscheme file, use default
     vim.cmd.colorscheme(defaultColorScheme)
   end
 end
@@ -76,8 +78,8 @@ vim.keymap.set('n', '<leader>zz', function()
         local colorschemeName = string.gsub(string.lower(entry.value), "-", "")
         -- First line is the neovim colorscheme name, and the second line is the colorscheme with no - or caps
         vim.fn.writefile({ entry.value, colorschemeName }, lastCurrentColorschemeFilePath)
-        os.execute('sh ./colorscripts/' .. colorschemeName .. '.sh')
-        require("telescope.actions").select_default(prompt_bufnr) -- apply it
+        os.execute('sh ' .. colorscriptPath.. colorschemeName .. '.sh')
+        require("telescope.actions").select_default(prompt_bufnr)
       end)
 
       return true

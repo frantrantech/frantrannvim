@@ -134,7 +134,8 @@ vim.keymap.set('n', '_', '0', {remap = false})
 
 -- Disable arrow keys
 local opts = { noremap = true, silent = true }
-vim.keymap.set({ 'n', 'i', 'v' }, '<Up>', '<Nop>', opts)
-vim.keymap.set({ 'n', 'i', 'v' }, '<Down>', '<Nop>', opts)
+
+vim.keymap.set({ 'n', 'i', 'v' }, '<Up>', ':horizontal resize +2<cr>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Down>', ':horizontal resize -2<cr>', opts)
 vim.keymap.set({ 'n', 'i', 'v' }, '<Left>', '<Nop>', opts)
 vim.keymap.set({ 'n', 'i', 'v' }, '<Right>', '<Nop>', opts)

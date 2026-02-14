@@ -343,19 +343,12 @@ require("lazy").setup({
     },
 
     {
-      dir = "~/Desktop/dig.nvim",
+      dir = "~/Desktop/repos/dig.nvim",
       config = function ()
         require "dig"
         require "picker"
       end
     }
-
-
-
-
-
-
-
 
   },
   -- automatically check for plugin updates

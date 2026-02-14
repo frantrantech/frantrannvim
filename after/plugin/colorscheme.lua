@@ -1,87 +1,92 @@
--- vim.cmd("colorscheme cyberdream")
+---@diagnostic disable: undefined-global
+local action_state = require "telescope.actions.state"
+local builtin = require "telescope.builtin"
+
+--[[
+------------------------   Colorscheme Flow ------------------------
 --
+-- Assumptions for this to work:
+--    Terminal Colorscheme should already set in wezterm.lua
+--    Shell Scripts for setting color should be in nvim/colorscripts
+--    Colorscripts are taken from https://github.com/mbadolato/iTerm2-Color-Schemes/tree/master/dynamic-colors
+--        Then made all lowercase, no spaces in order to normalize from the neovim colorscheme format
+--
+-- Open Telescope colorpicker to set a color.
+--    On Colorscheme Select: Save the colorscheme to a file in the format of:
+--        NEOVIM_COLORSCHEME_NAME
+--        SHELL_SCRIPT_COLORSCHEME_NAME
+--    
+--    On Neovim Load: Read the file that stores the colorscheme names
+--
+--        If the shell script exists for the colorscheme:
+--          Set Neovim Colorscheme
+--          Run Shell Script to Update terminal colorscheme
+--
+--        If the shell script doesn't exist:
+--          Set Neovim colorscheme to default
+--          Set Terminal colorscheme to default
+--
+--        If the colorscheme file does not exist:
+--          Set Neovim colorscheme to default
+--          Do not call a shell script, keep using default terminal colors
+--]]
 
--- Lua:
--- For dark theme (neovim's default)
--- vim.o.background = 'dark
+local defaultColorScheme = "carbonfox"
+local configPath = vim.fn.stdpath("config")
+function SetColorschemeFromFile()
+  local lastUsedColorschemeFileName = "lastColorScheme.txt"
+  local lastCurrentColorschemeFilePath = configPath .. "/" .. lastUsedColorschemeFileName
+  local lastCurrentColorSchemeFileExists = vim.uv.fs_stat(lastCurrentColorschemeFilePath) ~= nil
 
--- require('kanagawa').setup({
---     compile = false,             -- enable compiling the colorscheme
---     undercurl = true,            -- enable undercurls
---     commentStyle = { italic = true },
---     functionStyle = {},
---     keywordStyle = { italic = true},
---     statementStyle = { bold = true },
---     typeStyle = {},
---     transparent = false,         -- do not set background color
---     dimInactive = false,         -- dim inactive window `:h hl-NormalNC`
---     terminalColors = true,       -- define vim.g.terminal_color_{0,17}
---     colors = {                   -- add/modify theme and palette colors
---         palette = {},
---         theme = { wave = {}, lotus = {}, dragon = {}, all = {} },
---     },
---     overrides = function(colors) -- add/modify highlights
---         return {}
---     end,
---     theme = "wave",              -- Load "wave" theme when 'background' option is not set
---     background = {               -- map the value of 'background' option to a theme
---         dark = "wave",           -- try "dragon" !
---         light = "lotus"
---     },
--- })
+  if lastCurrentColorSchemeFileExists then
+    local lastColorschemes = vim.fn.system("cat " .. lastCurrentColorschemeFilePath)
+    local lastColorchemesArray = vim.split(lastColorschemes, "\n", { plain = true })
+    local lastColorschemeNvimName = lastColorchemesArray[1]
+    local lastColorschemeScriptName = lastColorchemesArray[2]
 
-require('nightfox').setup({
-  options = {
-    compile_path = vim.fn.stdpath("cache") .. "/nightfox",
-    compile_file_suffix = "_compiled", -- Compiled file suffix
-    transparent = false,     -- Disable setting background
-    terminal_colors = true,  -- Set terminal colors (vim.g.terminal_color_*) used in `:terminal`
-    dim_inactive = false,    -- Non focused panes set to alternative background
-    module_default = true,   -- Default enable value for modules
-    colorblind = {
-      enable = false,        -- Enable colorblind support
-      simulate_only = false, -- Only show simulated colorblind colors and not diff shifted
-      severity = {
-        protan = 0,          -- Severity [0,1] for protan (red)
-        deutan = 0,          -- Severity [0,1] for deutan (green)
-        tritan = 0,          -- Severity [0,1] for tritan (blue)
-      },
-    },
-    styles = {               -- Style to be applied to different syntax groups
-      comments = "NONE",     -- Value is any valid attr-list value `:help attr-list`
-      conditionals = "NONE",
-      constants = "NONE",
-      functions = "NONE",
-      keywords = "NONE",
-      numbers = "NONE",
-      operators = "NONE",
-      strings = "NONE",
-      types = "NONE",
-      variables = "NONE",
-    },
-    inverse = {             -- Inverse highlight for different types
-      match_paren = false,
-      visual = false,
-      search = false,
-    },
-    modules = {             -- List of various plugins and additional options
-      -- ...
-    },
-  },
-  palettes = {},
-  specs = {},
-  groups = {},
-})
+    local defaultColorSchemePath = configPath .. "/" .. "carbonfox" .. ".sh"
+    local lastColorschemeShellScriptPath = configPath ..
+        "/colorscripts/" .. "" .. lastColorschemeScriptName .. ".sh"
+    local lastColorschemeShellScriptExists = vim.uv.fs_stat(lastColorschemeShellScriptPath) ~= nil
 
--- vim.cmd("colorscheme rose-pine")
--- vim.cmd("colorscheme rose-pine-main")
--- vim.cmd("colorscheme rose-pine-moon")
--- vim.cmd("colorscheme rose-pine-dawn")
--- vim.cmd.colorscheme "vscode"
--- vim.cmd([[colorscheme gruvbox]])
+    -- If the shell script exists, then use set nvim colorscheme AND execute colorscheme script
+    if lastColorschemeShellScriptExists then
+      vim.cmd.colorscheme(lastColorschemeNvimName)
+      os.execute('sh ' .. lastColorschemeShellScriptPath)
+      -- If the shell script doesn't exist, then default to carbonfox
+    else
+      vim.cmd.colorscheme(defaultColorScheme)
+      os.execute('sh ' .. defaultColorSchemePath)
+    end
+    -- If we don't have the colorscheme file, use default
+  else
+    vim.cmd.colorscheme(defaultColorScheme)
+  end
+end
 
--- vim.cmd[[colorscheme tokyonight]]
--- vim.cmd("colorscheme cyberdream")
+SetColorschemeFromFile()
+
+-- Run a shell script inside /nvim/colorscripts. script must be normalized to no spaces, dashes, or uppercases
+vim.keymap.set('n', '<leader>zz', function()
+  builtin.colorscheme({
+    enable_preview = true,
+    attach_mappings = function(prompt_bufnr, map)
+      map('i', '<CR>', function()
+        local entry = action_state.get_selected_entry()
+        local colorschemeName = string.gsub(string.lower(entry.value), "-", "")
+        -- First line is the neovim colorscheme name, and the second line is the colorscheme with no - or caps
+        vim.fn.writefile({ entry.value, colorschemeName }, lastCurrentColorschemeFilePath)
+        os.execute('sh ./colorscripts/' .. colorschemeName .. '.sh')
+        require("telescope.actions").select_default(prompt_bufnr) -- apply it
+      end)
+
+      return true
+    end
+  })
+end, { desc = "Run a shell script to update terminal colorscheme after using telescope color picker" })
+
+
+-- vim.opt.background = "dark" -- set this to dark or light
 -- -- Transparent main buffer
 -- vim.api.nvim_set_hl(0, "Normal", { bg = "none" })
 -- vim.api.nvim_set_hl(0, "NormalNC", { bg = "none" })
@@ -93,6 +98,3 @@ require('nightfox').setup({
 -- vim.api.nvim_set_hl(0, "Pmenu", { bg = "#1a1b26" })             -- popup menus (like completion)
 -- vim.api.nvim_set_hl(0, "TelescopeNormal", { bg = "#1a1b26" })   -- Telescope popups
 -- vim.api.nvim_set_hl(0, "TelescopeBorder", { bg = "#1a1b26" })vim.cmd("colorscheme kanagawa")
-
--- vim.opt.background = "dark" -- set this to dark or light
-vim.cmd("colorscheme carbonfox")

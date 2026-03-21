@@ -4,8 +4,6 @@
 --- Used Leader Mappings ---              +------------+------------+------------+------------+              +------------+------------+------------+------------+
 ---- 1-4   harpoon                        |            |            |            |            |              |            |            |            |            |
 ----                                      +------------+------------+------------+------------+              +------------+------------+------------+------------+
----- 6,7   vertical resize                |            |            |            |            |              |            |            |            |            |
-----                                      +------------+------------+------------+------------+              +------------+------------+------------+------------+
 ---- 8     create a comment               |            |            |            |            |              |            |            |            |            |
 ----                                      +------------+------------+------------+------------+              +------------+------------+------------+------------+
 ---- 9     copy file to clipboard         |            |            |            |            |              |            |            |            |            |
@@ -101,13 +99,15 @@ vim.keymap.set('n', '<leader>9', 'ggVG"+y<C-o>')
 -- Multiline comment
 vim.keymap.set('n', '<leader>8', 'o//<Esc>i**<Esc>i')
 
--- Resize window
-vim.keymap.set('n', '<leader>7', ':vertical resize +2<cr>')
-vim.keymap.set('n', '<leader>6', ':vertical resize -2<cr>')
 -- Cycle through windows
 vim.keymap.set('n', '<leader>o', '<C-w>w')
 -- Create window, go to first buffer in harpoon
 vim.keymap.set('n', '<leader>i', ':vsplit<cr><C-w>w<leader>1', { remap = true })
+-- Resize window
+vim.keymap.set({ 'n', 'i', 'v' }, '<Up>', ':horizontal resize +2<cr>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Down>', ':horizontal resize -2<cr>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Left>', ':vertical resize +2<cr>', opts)
+vim.keymap.set({ 'n', 'i', 'v' }, '<Right>', ':vertical resize -2<cr>', opts)
 
 -- Save File
 vim.keymap.set('n', '<leader>;', ':w<cr>')
@@ -134,8 +134,4 @@ vim.keymap.set('n', '_', '0', {remap = false})
 
 -- Disable arrow keys
 local opts = { noremap = true, silent = true }
-
-vim.keymap.set({ 'n', 'i', 'v' }, '<Up>', ':horizontal resize +2<cr>', opts)
-vim.keymap.set({ 'n', 'i', 'v' }, '<Down>', ':horizontal resize -2<cr>', opts)
-vim.keymap.set({ 'n', 'i', 'v' }, '<Left>', '<Nop>', opts)
-vim.keymap.set({ 'n', 'i', 'v' }, '<Right>', '<Nop>', opts)
+-- vim.keymap.set({ 'n', 'i', 'v' }, '<Left>', '<Nop>', opts)

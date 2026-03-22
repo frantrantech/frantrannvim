@@ -2,6 +2,8 @@
 local action_state = require "telescope.actions.state"
 local builtin = require "telescope.builtin"
 
+-- USE :message to see vim.notify logs
+
 --[[
 ------------------------   Colorscheme Flow ------------------------
 --
@@ -33,6 +35,8 @@ local builtin = require "telescope.builtin"
 
 local defaultColorScheme = "carbonfox"
 local configPath = vim.fn.stdpath("config")
+-- /Users/francistran/.local/state/nvim
+local statePath = vim.fn.stdpath("state")
 local colorscriptPath = configPath .. "/colorscripts/"
 local tempColorscriptPath = configPath .. "/tempColorscripts/"
 local lastUsedColorschemeFileName = "lastColorScheme.txt"
@@ -43,9 +47,11 @@ local END_LINE = "\\" .. "007\""
 local weztermColorsPath = "/Users/francistran/.config/wezterm/colors/"
 
 -- Looks up a Neovim highlight group and returns its color as a hex string.
-local function getNvimHightlightGroup(highlight_group, color_attribute)
+-- Rely on the colorscheme to set
+local function getNvimHighlightGroup(highlight_group, color_attribute)
   local success, highlight_def = pcall(vim.api.nvim_get_hl, 0, { name = highlight_group, link = false })
   if success and highlight_def and highlight_def[color_attribute] then
+    vim.notify(highlight_group .. "." .. color_attribute .. " = " .. string.format("#%06x", highlight_def[color_attribute]))
     return string.format("#%06x", highlight_def[color_attribute])
   end
   return ""
@@ -54,7 +60,7 @@ end
 -- Reads in the current nvim colorscheme and generates the shell script to set the terminal colorscheme
 -- Executes the script if it doesn't exist.
 local function createColorschemeShellScript(colorschemeName)
-  local colorschemePath = tempColorscriptPath .. colorschemeName .. ".sh"
+  local colorschemePath = colorscriptPath .. colorschemeName .. ".sh"
   local lastColorschemeShellScriptExists = vim.uv.fs_stat(colorschemePath) ~= nil
 
   if lastColorschemeShellScriptExists then
@@ -64,15 +70,15 @@ local function createColorschemeShellScript(colorschemeName)
   local colorscript = { "#!/bin/sh", "" .. "#" .. colorschemeName }
 
   local foreground = vim.g.terminal_color_foreground ~= "" and vim.g.terminal_color_foreground or
-      getNvimHightlightGroup("Normal", "fg")
-  local background = vim.g.terminal_color_background ~= "" and vim.g.terminal_color_background or
-      getNvimHightlightGroup("Normal", "bg")
+      getNvimHighlightGroup("Normal", "fg")
+  -- local background = vim.g.terminal_color_background ~= "" and vim.g.terminal_color_background or
+  local background = getNvimHighlightGroup("Normal", "bg")
 
-  local cursorFg = getNvimHightlightGroup("Cursor", "fg")
+  local cursorFg = getNvimHighlightGroup("Cursor", "fg")
   if cursorFg == "" then cursorFg = foreground end
 
-  local selectionBg = getNvimHightlightGroup("Visual", "bg")
-  local selectionFg = getNvimHightlightGroup("Visual", "fg")
+  local selectionBg = getNvimHighlightGroup("Visual", "bg")
+  local selectionFg = getNvimHighlightGroup("Visual", "fg")
   if selectionFg == "" then selectionFg = foreground end
 
   -- Set ansi
@@ -102,9 +108,9 @@ local function createColorschemeShellScript(colorschemeName)
   os.execute('sh ' .. colorschemePath)
 end
 
--- Reads in the current nvimColorscheme and generates a TOML for the colorscheme
-local function createColorSchemeTOML(nvimColorschemeName)
-  local colorschemeTOMLPath = weztermColorsPath .. nvimColorschemeName .. ".toml"
+-- Reads in the current colorscheme in normallized form and generates a TOML for the colorscheme
+local function createColorSchemeTOML(normalizedColorschemeName)
+  local colorschemeTOMLPath = weztermColorsPath .. normalizedColorschemeName .. ".toml"
   local colorschemeTOMLExists = vim.uv.fs_stat(colorschemeTOMLPath) ~= nil
   if colorschemeTOMLExists then
     return
@@ -119,23 +125,23 @@ local function createColorSchemeTOML(nvimColorschemeName)
   end
 
   local foreground = vim.g.terminal_color_foreground ~= "" and vim.g.terminal_color_foreground or
-      getNvimHightlightGroup("Normal", "fg")
-  local background = vim.g.terminal_color_background ~= "" and vim.g.terminal_color_background or
-      getNvimHightlightGroup("Normal", "bg")
+      getNvimHighlightGroup("Normal", "fg")
+  -- local background = vim.g.terminal_color_background ~= "" and vim.g.terminal_color_background or
+  local background = getNvimHighlightGroup("Normal", "bg")
 
-  local cursor_bg = getNvimHightlightGroup("Cursor", "bg")
+  local cursor_bg = getNvimHighlightGroup("Cursor", "bg")
   if cursor_bg == "" then cursor_bg = foreground end
-  local cursor_fg = getNvimHightlightGroup("Cursor", "fg")
+  local cursor_fg = getNvimHighlightGroup("Cursor", "fg")
   if cursor_fg == "" then cursor_fg = background end
   local cursor_border = cursor_bg
 
-  local compose_cursor = getNvimHightlightGroup("Number", "fg")
-  local scrollbar_thumb = getNvimHightlightGroup("LineNr", "fg")
-  local split = getNvimHightlightGroup("WinSeparator", "fg")
+  local compose_cursor = getNvimHighlightGroup("Number", "fg")
+  local scrollbar_thumb = getNvimHighlightGroup("LineNr", "fg")
+  local split = getNvimHighlightGroup("WinSeparator", "fg")
   local visual_bell = foreground
 
-  local selection_bg = getNvimHightlightGroup("Visual", "bg")
-  local selection_fg = getNvimHightlightGroup("Visual", "fg")
+  local selection_bg = getNvimHighlightGroup("Visual", "bg")
+  local selection_fg = getNvimHighlightGroup("Visual", "fg")
   if selection_fg == "" then selection_fg = foreground end
 
   local indexed = {}
@@ -207,14 +213,11 @@ local function createColorSchemeTOML(nvimColorschemeName)
   end
 
   table.insert(toml, "")
-  table.insert(toml, "[metadata]")
-  table.insert(toml, 'aliases = []')
-  table.insert(toml, 'author = ""')
-  table.insert(toml, string.format('name = "%s"', nvimColorschemeName))
+  table.insert(toml, string.format('name = "%s"', normalizedColorschemeName))
   table.insert(toml, 'origin_url = ""')
   table.insert(toml, 'wezterm_version = ""')
 
-  vim.fn.writefile(toml, weztermColorsPath .. nvimColorschemeName .. ".toml")
+  vim.fn.writefile(toml, weztermColorsPath .. normalizedColorschemeName .. ".toml")
 end
 
 -- On nvim load, read in colorscripts.txt
@@ -269,11 +272,11 @@ vim.keymap.set('n', '<leader>zz', function()
     attach_mappings = function(prompt_bufnr, map)
       map('i', '<CR>', function()
         local entry = action_state.get_selected_entry()
-        local nvimColorschemName = entry.value
-        local colorschemeName = string.gsub(string.lower(nvimColorschemName), "-", "")
+        local nvimColorschemeName = entry.value
+        local colorschemeName = string.gsub(string.lower(nvimColorschemeName), "-", "")
         local scriptPath = colorscriptPath .. colorschemeName .. ".sh"
         -- First line is the neovim colorscheme name, and the second line is the colorscheme with no - or caps
-        vim.fn.writefile({ nvimColorschemName, colorschemeName }, lastCurrentColorschemeFilePath)
+        vim.fn.writefile({ nvimColorschemeName, colorschemeName }, lastCurrentColorschemeFilePath)
         createColorschemeShellScript(colorschemeName)
         os.execute('sh ' .. scriptPath)
         require("telescope.actions").select_default(prompt_bufnr)
